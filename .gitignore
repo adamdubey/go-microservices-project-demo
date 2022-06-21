@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+.vscode
 
 # OS generated files
 .DS_Store
@@ -14,3 +15,5 @@
 
 # Go workspace file
 go.work
+
+db-data/
