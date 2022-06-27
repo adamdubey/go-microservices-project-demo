@@ -1,6 +1,10 @@
 FRONT_END_BINARY=frontApp
 BROKER_BINARY=brokerApp
 AUTH_BINARY=authApp
+LOGGER_BINARY=loggerServiceApp
+MAIL_BINARY=mailerApp
+LISTENER_BINARY=listenerApp
+CLIENT_APP_BINARY=frontApp
 
 
 ## up: starts all containers
@@ -10,7 +14,7 @@ up:
 	@echo "Docker images started!"
 
 ## up_build: stops docker-compose, builds all projects, and starts all containers
-up_build: build_broker build_auth
+up_build: build_broker build_auth build_logger build_mail build_listener
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
@@ -23,10 +27,22 @@ down:
 	docker-compose down
 	@echo "Done!"
 
+## build_client: build client (front-end) app binary
+build_client:
+	@echo "Building client binary..."
+	cd front-end && env GOOS=linux CGO_ENABLED=0 go build -o ${CLIENT_APP_BINARY} ./cmd/web
+	@echo "Done!"
+
 ## build_broker: build broker binary
 build_broker:
 	@echo "Building broker binary..."
 	cd broker-service && env GOOS=linux CGO_ENABLED=0 go build -o ${BROKER_BINARY} ./cmd/api
+	@echo "Done!"
+
+## build_logger: build broker binary
+build_logger:
+	@echo "Building logger binary..."
+	cd logger-service && env GOOS=linux CGO_ENABLED=0 go build -o ${LOGGER_BINARY} ./cmd/api
 	@echo "Done!"
 
 
@@ -34,6 +50,18 @@ build_broker:
 build_auth:
 	@echo "Building auth binary..."
 	cd authentication-service && env GOOS=linux CGO_ENABLED=0 go build -o ${AUTH_BINARY} ./cmd/api
+	@echo "Done!"
+
+## build_mail: build mail binary
+build_mail:
+	@echo "Building mail binary..."
+	cd mail-service && env GOOS=linux CGO_ENABLED=0 go build -o ${MAIL_BINARY} ./cmd/api
+	@echo "Done!"
+
+## build_listener: build listener binary
+build_listener:
+	@echo "Building listener binary..."
+	cd listener-service && env GOOS=linux CGO_ENABLED=0 go build -o ${LISTENER_BINARY} .
 	@echo "Done!"
 
 ## build_front: build front end binary
